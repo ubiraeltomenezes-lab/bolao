@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolão Copa - Brasil x Marrocos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        /* Estilo do aviso de Premiação */
+        .premio-aviso {
+            text-align: center;
+            color: #d32f2f;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .contador-box {
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+            padding: 8px 12px;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            width: fit-content;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus { border-color: #007bff; }
+
+        .placar-wrapper {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            margin: 20px 0;
+        }
+
+        .placar-titulo {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+
+        .placar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .time-nome {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .placar-input {
+            width: 70px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            padding: 8px;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        .X {
+            font-size: 22px;
+            font-weight: bold;
+            color: #6c757d;
+            margin-top: 25px;
+        }
+
+        button.btn-principal {
+            width: 100%;
+            padding: 14px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button.btn-principal:hover { background-color: #218838; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .error { background-color: #f8d7da; color: #721c24; display: block; }
+        .success { background-color: #d4edda; color: #155724; display: block; }
+        .loading { background-color: #e2e3e5; color: #383d41; display: block; }
+
+        .pix-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e3f2fd;
+            border: 2px solid #90caf9;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .pix-titulo {
+            color: #0d47a1;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .pix-chave-box {
+            background: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 16px;
+            border: 1px dashed #0d47a1;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .btn-whats {
+            display: block;
+            text-align: center;
+            background-color: #25d366;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .btn-whats:hover { background-color: #1ebd59; }
+
+        .ganhadores-container {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 2px dashed #ffc107;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .ganhadores-titulo {
+            text-align: center;
+            color: #856404;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .lista-ganhadores { list-style: none; text-align: center; }
+        .lista-ganhadores li {
+            background-color: rgba(255, 255, 255, 0.7);
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container"> 
+    <h2>⚽ Bolão Copa do Mundo ⚽</h2>
+    <div class="subtitle">Taxa de participação: <b>R$ 10,00</b></div>
+    
+    <div class="premio-aviso">🏆 O prêmio acumulado será de 85% do total arrecadado!</div>
+    
+    <div id="contadorParticipantes" class="contador-box">🏃‍♂️ Carregando participantes...</div>
+    
+    <form id="bolaoForm">
+        <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" required placeholder="Digite seu nome">
+        </div>
+
+        <div class="form-group">
+            <label for="telefone">Telefone (WhatsApp)</label>
+            <input type="tel" id="telefone" required placeholder="(00) 00000-0000" maxlength="15">
+        </div>
+
+        <div class="placar-wrapper">
+            <div class="placar-titulo">Placar do Jogo</div>
+            <div class="placar-container">
+                <div class="time-box">
+                    <span class="time-nome">🇧🇷 Brasil</span>
+                    <input type="text" id="golsBrasil" class="placar-input" required pattern="\d*" inputmode="numeric" maxlength="2" placeholder="0">
+                </div>
+                <span class="X">X</span>
+                <div class="time-box">
+                    <span class="time-nome">🇲🇦 Marrocos</span>
+                    <input type="text" id="golsMarrocos" class="placar-input" required pattern="\d*" inputmode="numeric" maxlength="2" placeholder="0">
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" id="btnEnviar" class="btn-principal">Confirmar e Ir para o Pagamento</button>
+    </form>
+
+    <div id="statusMessage" class="message"></div>
+
+    <div id="areaPix" class="pix-container">
+        <div class="pix-titulo">Falta pouco! Faça o Pix para validar:</div>
+        <p style="font-size: 14px; color:#555; text-align:center; margin-bottom:10px;">Valor: <b>R$ 10,00</b></p>
+        <div class="pix-chave-box" id="chavePixTexto">SUA_CHAVE_PIX_AQUI</div>
+        <p style="font-size: 13px; color:#555; text-align:center;">Após pagar, clique abaixo para enviar o comprovante no WhatsApp e garantir sua vaga!</p>
+        <a href="#" id="linkWhats" target="_blank" class="btn-whats">📲 Enviar Comprovante</a>
+    </div>
+
+    <div id="areaGanhadores" class="ganhadores-container">
+        <div class="ganhadores-titulo">🏆 GANHADORES DO BOLÃO 🏆</div>
+        <ul id="listaGanhadores" class="lista-ganhadores"></ul>
+    </div>
+</div>
+
+<script>
+    // ⚠️ CONFIGURAÇÕES DO SEU BOLÃO
+    const API_URL = "https://sheetdb.io/api/v1/o814ftepuo6s3"; 
+    const DATA_LIMITE_JOGO = new Date(2026, 6, 13, 19, 0, 0); // 13/06 às 19:00h
+    
+    const CHAVE_PIX = "13997446989"; 
+    const TELEFONE_WHATSAPP = "5513999999999"; 
+
+    const form = document.getElementById('bolaoForm');
+    const inputTelefone = document.getElementById('telefone');
+    const statusMessage = document.getElementById('statusMessage');
+    const btnEnviar = document.getElementById('btnEnviar');
+    const areaGanhadores = document.getElementById('areaGanhadores');
+    const listaGanhadores = document.getElementById('listaGanhadores');
+    const areaPix = document.getElementById('areaPix');
+    const linkWhats = document.getElementById('linkWhats');
+    const contadorElemento = document.getElementById('contadorParticipantes');
+
+    document.getElementById('chavePixTexto').innerText = CHAVE_PIX;
+
+    window.addEventListener('DOMContentLoaded', () => {
+        atualizarContadorEVerificar();
+    });
+
+    async function atualizarContadorEVerificar() {
+        const estaBloqueado = verificarHorarioEBloquear();
+        
+        try {
+            const response = await fetch(`${API_URL}?sheet=Página1`);
+            const dados = await response.json();
+            
+            if (Array.isArray(dados)) {
+                const total = dados.length;
+                contadorElemento.innerHTML = `🔥 <b>${total}</b> pessoas já estão participando!`;
+            } else {
+                contadorElemento.innerHTML = `🔥 Seja o primeiro a participar!`;
+            }
+        } catch (error) {
+            console.error(error);
+            contadorElemento.style.display = 'none';
+        }
+
+        if (estaBloqueado) { buscarGanhadores(); }
+    }
+
+    function verificarHorarioEBloquear() {
+        const agora = new Date();
+        if (agora >= DATA_LIMITE_JOGO) {
+            form.style.display = 'none';
+            showMessage("🔒 As apostas foram encerradas! O jogo já começou.", "loading");
+            return true;
+        }
+        return false;
+    }
+
+    async function buscarGanhadores() {
+        try {
+            const resResultado = await fetch(`${API_URL}?sheet=resultado`);
+            const dadosResultado = await resResultado.json();
+
+            if (dadosResultado.length > 0 && dadosResultado[0].brasil !== "" && dadosResultado[0].gols_marrocos !== "") {
+                const resPlacarBrasil = dadosResultado[0].brasil;
+                const resPlacarMarrocos = dadosResultado[0].gols_marrocos;
+
+                showMessage(`Placar Final: Brasil ${resPlacarBrasil} X ${resPlacarMarrocos} Marrocos`, "loading");
+
+                const resPalpites = await fetch(`${API_URL}?sheet=Página1`);
+                const dadosPalpites = await resPalpites.json();
+
+                const ganhadores = dadosPalpites.filter(p => 
+                    p.gols_brasil == resPlacarBrasil && 
+                    p.gols_marrocos == resPlacarMarrocos && 
+                    p.pagamento.toLowerCase() === 'pago'
+                );
+
+                listaGanhadores.innerHTML = "";
+
+                if (ganhadores.length > 0) {
+                    ganhadores.forEach(g => {
+                        const li = document.createElement('li');
+                        li.innerText = `🥇 ${g.nome} - (${g.telefone.slice(0,2)}) ${g.telefone.slice(2,7)}-${g.telefone.slice(7)}`;
+                        listaGanhadores.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.innerText = "Ninguém que pagou acertou o placar exato! 😮";
+                    listaGanhadores.appendChild(li);
+                }
+                areaGanhadores.style.display = "block";
+            }
+        } catch (error) { console.error(error); }
+    }
+
+    inputTelefone.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length > 11) value = value.slice(0, 11);
+        if (value.length > 6) { e.target.value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`; } 
+        else if (value.length > 2) { e.target.value = `(${value.slice(0, 2)}) ${value.slice(2)}`; } 
+        else if (value.length > 0) { e.target.value = `(${value.slice(0, 2)}`; } 
+        else { e.target.value = ""; }
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (verificarHorarioEBloquear()) return;
+
+        btnEnviar.disabled = true;
+        showMessage("Registrando seu palpite...", "loading");
+
+        const nome = document.getElementById('nome').value.trim();
+        const telefoneLimpo = inputTelefone.value.replace(/\D/g, ""); 
+        const golsBrasil = document.getElementById('golsBrasil').value;
+        const golsMarrocos = document.getElementById('golsMarrocos').value;
+
+        if (telefoneLimpo.length < 10 || telefoneLimpo.length > 11) {
+            showMessage("Por favor, insira um telefone válido.", "error");
+            btnEnviar.disabled = false;
+            return;
+        }
+
+        try {
+            const responseCheck = await fetch(`${API_URL}/search?sheet=Página1&telefone=${telefoneLimpo}`);
+            const dataCheck = await responseCheck.json();
+
+            if (dataCheck.length > 0) {
+                showMessage("❌ Este número de telefone já possui um palpite cadastrado!", "error");
+                btnEnviar.disabled = false;
+                return;
+            }
+
+            const responseSave = await fetch(`${API_URL}?sheet=Página1`, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    data: [{ 
+                        nome: nome, 
+                        telefone: telefoneLimpo, 
+                        gols_brasil: golsBrasil, 
+                        gols_marrocos: golsMarrocos, 
+                        pagamento: "Pendente" 
+                    }]
+                })
+            });
+
+            if (responseSave.ok) {
+                form.style.display = 'none'; 
+                statusMessage.style.display = 'none';
+                
+                const mensagemWhats = encodeURIComponent(`Olá! Acabei de enviar meu palpite no bolão (${nome} - Placar: ${golsBrasil}x${golsMarrocos}). Segue o comprovante de pagamento Pix de R$ 10,00.`);
+                linkWhats.href = `https://api.whatsapp.com/send?phone=${TELEFONE_WHATSAPP}&text=${mensagemWhats}`;
+                
+                areaPix.style.display = "block"; 
+            } else {
+                throw new Error("Erro ao salvar.");
+            }
+        } catch (error) {
+            console.error(error);
+            showMessage("⚠️ Erro de comunicação. Tente novamente.", "error");
+            btnEnviar.disabled = false;
+        }
+    });
+
+    function showMessage(text, type) {
+        statusMessage.innerText = text;
+        statusMessage.className = `message ${type}`;
+    }
+</script>
+</body>
+</html>
