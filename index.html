@@ -178,7 +178,6 @@
         .success { background-color: #d4edda; color: #155724; display: block; }
         .loading { background-color: #e2e3e5; color: #383d41; display: block; }
 
-        /* Estilos melhorados para a Tela do Pix com Resumo */
         .pix-container {
             margin-top: 20px;
             padding: 20px;
@@ -280,7 +279,7 @@
     <h2>⚽ Bolão Copa do Mundo ⚽</h2>
     <div class="subtitle">Taxa de participação: <b>R$ 10,00</b></div>
     <div class="premio-aviso">🏆 O prêmio acumulado será de 85% do total arrecadado!</div>
-    <div id="contadorParticipantes" class="contador-box">🏃‍♂️ Carregando participantes...</div>
+    <div id="contadorParticipantes" class="contador-box">🏃‍♂️ Carregando confirmados...</div>
     
     <form id="bolaoForm">
         <div class="form-group">
@@ -334,11 +333,11 @@
 
 <script>
     // ⚠️ CONFIGURAÇÕES DO SEU BOLÃO
-    const API_URL = "https://sheetdb.io/api/v1/o814ftepuo6s3"; 
+    const API_URL = "SUA_URL_DO_SHEETDB_AQUI"; 
     const DATA_LIMITE_JOGO = new Date(2026, 5, 13, 19, 0, 0); // 13/06 às 19:00h
     
-    const CHAVE_PIX = "13997446989"; // Ajustado conforme seu print!
-    const TELEFONE_WHATSAPP = "5513997446989"; // Seu número configurado
+    const CHAVE_PIX = "13997446989"; 
+    const TELEFONE_WHATSAPP = "5513997446989"; 
 
     const form = document.getElementById('bolaoForm');
     const inputTelefone = document.getElementById('telefone');
@@ -361,10 +360,19 @@
         try {
             const response = await fetch(`${API_URL}?sheet=Página1`);
             const dados = await response.json();
+            
             if (Array.isArray(dados)) {
-                contadorElemento.innerHTML = `🔥 <b>${dados.length}</b> pessoas já estão participando!`;
+                // 🌟 NOVO FILTRO: Só conta se o status for exatamente "Pago" (maiúsculo ou minúsculo)
+                const pagos = dados.filter(p => p.pagamento && p.pagamento.toLowerCase() === 'pago');
+                const totalPagos = pagos.length;
+                
+                if (totalPagos > 0) {
+                    contadorElemento.innerHTML = `🔥 <b>${totalPagos}</b> apostas confirmadas!`;
+                } else {
+                    contadorElemento.innerHTML = `🔥 Nenhuma aposta confirmada ainda. Participe!`;
+                }
             } else {
-                contadorElemento.innerHTML = `🔥 Seja o primeiro a participar!`;
+                contadorElemento.innerHTML = `🔥 Participe e garanta sua vaga!`;
             }
         } catch (error) {
             console.error(error);
@@ -470,7 +478,6 @@
                 form.style.display = 'none'; 
                 statusMessage.style.display = 'none';
                 
-                // 🌟 ATUALIZA O BLOCO DO RESUMO COM OS GOLS QUE O USUÁRIO DIGITOU
                 document.getElementById('textoResumoPalpite').innerHTML = `✅ Seu Palpite: <b>Brasil ${golsBrasil} x ${golsMarrocos} Marrocos</b>`;
 
                 const mensagemWhats = encodeURIComponent(`Olá! Acabei de enviar meu palpite no bolão (${nome} - Placar: ${golsBrasil}x${golsMarrocos}). Segue o comprovante de pagamento Pix de R$ 10,00.`);
