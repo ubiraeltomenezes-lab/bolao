@@ -43,7 +43,6 @@
             margin-bottom: 5px;
         }
 
-        /* Estilo do aviso de Premiação */
         .premio-aviso {
             text-align: center;
             color: #d32f2f;
@@ -179,6 +178,7 @@
         .success { background-color: #d4edda; color: #155724; display: block; }
         .loading { background-color: #e2e3e5; color: #383d41; display: block; }
 
+        /* Estilos melhorados para a Tela do Pix com Resumo */
         .pix-container {
             margin-top: 20px;
             padding: 20px;
@@ -188,11 +188,35 @@
             display: none;
         }
 
+        .resumo-palpite-box {
+            background-color: #fff;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .resumo-texto {
+            font-size: 16px;
+            color: #1565c0;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .aviso-print {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
         .pix-titulo {
             color: #0d47a1;
             font-weight: bold;
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+            font-size: 15px;
         }
 
         .pix-chave-box {
@@ -252,12 +276,10 @@
 </head>
 <body>
 
-<div class="container"> 
+<div class="container">
     <h2>⚽ Bolão Copa do Mundo ⚽</h2>
     <div class="subtitle">Taxa de participação: <b>R$ 10,00</b></div>
-    
     <div class="premio-aviso">🏆 O prêmio acumulado será de 85% do total arrecadado!</div>
-    
     <div id="contadorParticipantes" class="contador-box">🏃‍♂️ Carregando participantes...</div>
     
     <form id="bolaoForm">
@@ -292,10 +314,15 @@
     <div id="statusMessage" class="message"></div>
 
     <div id="areaPix" class="pix-container">
-        <div class="pix-titulo">Falta pouco! Faça o Pix para validar:</div>
-        <p style="font-size: 14px; color:#555; text-align:center; margin-bottom:10px;">Valor: <b>R$ 10,00</b></p>
+        <div class="resumo-palpite-box">
+            <div class="resumo-texto" id="textoResumoPalpite">Seu Palpite: Brasil 0 x 0 Marrocos</div>
+            <div class="aviso-print">📸 Se preferir, tire um print desta tela para sua segurança!</div>
+        </div>
+
+        <div class="pix-titulo">Faça o Pix para validar a sua vaga:</div>
+        <p style="font-size: 14px; color:#555; text-align:center; margin-bottom:10px;">Valor da Inscrição: <b>R$ 10,00</b></p>
         <div class="pix-chave-box" id="chavePixTexto">SUA_CHAVE_PIX_AQUI</div>
-        <p style="font-size: 13px; color:#555; text-align:center;">Após pagar, clique abaixo para enviar o comprovante no WhatsApp e garantir sua vaga!</p>
+        <p style="font-size: 13px; color:#555; text-align:center;">Após pagar, clique abaixo para enviar o comprovante no WhatsApp!</p>
         <a href="#" id="linkWhats" target="_blank" class="btn-whats">📲 Enviar Comprovante</a>
     </div>
 
@@ -308,10 +335,10 @@
 <script>
     // ⚠️ CONFIGURAÇÕES DO SEU BOLÃO
     const API_URL = "https://sheetdb.io/api/v1/o814ftepuo6s3"; 
-    const DATA_LIMITE_JOGO = new Date(2026, 6, 13, 19, 0, 0); // 13/06 às 19:00h
+    const DATA_LIMITE_JOGO = new Date(2026, 5, 13, 19, 0, 0); // 13/06 às 19:00h
     
-    const CHAVE_PIX = "13997446989"; 
-    const TELEFONE_WHATSAPP = "5513999999999"; 
+    const CHAVE_PIX = "13997446989"; // Ajustado conforme seu print!
+    const TELEFONE_WHATSAPP = "5513997446989"; // Seu número configurado
 
     const form = document.getElementById('bolaoForm');
     const inputTelefone = document.getElementById('telefone');
@@ -331,14 +358,11 @@
 
     async function atualizarContadorEVerificar() {
         const estaBloqueado = verificarHorarioEBloquear();
-        
         try {
             const response = await fetch(`${API_URL}?sheet=Página1`);
             const dados = await response.json();
-            
             if (Array.isArray(dados)) {
-                const total = dados.length;
-                contadorElemento.innerHTML = `🔥 <b>${total}</b> pessoas já estão participando!`;
+                contadorElemento.innerHTML = `🔥 <b>${dados.length}</b> pessoas já estão participando!`;
             } else {
                 contadorElemento.innerHTML = `🔥 Seja o primeiro a participar!`;
             }
@@ -346,7 +370,6 @@
             console.error(error);
             contadorElemento.style.display = 'none';
         }
-
         if (estaBloqueado) { buscarGanhadores(); }
     }
 
@@ -439,13 +462,7 @@
                 method: 'POST',
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    data: [{ 
-                        nome: nome, 
-                        telefone: telefoneLimpo, 
-                        gols_brasil: golsBrasil, 
-                        gols_marrocos: golsMarrocos, 
-                        pagamento: "Pendente" 
-                    }]
+                    data: [{ nome: nome, telefone: telefoneLimpo, gols_brasil: golsBrasil, gols_marrocos: golsMarrocos, pagamento: "Pendente" }]
                 })
             });
 
@@ -453,6 +470,9 @@
                 form.style.display = 'none'; 
                 statusMessage.style.display = 'none';
                 
+                // 🌟 ATUALIZA O BLOCO DO RESUMO COM OS GOLS QUE O USUÁRIO DIGITOU
+                document.getElementById('textoResumoPalpite').innerHTML = `✅ Seu Palpite: <b>Brasil ${golsBrasil} x ${golsMarrocos} Marrocos</b>`;
+
                 const mensagemWhats = encodeURIComponent(`Olá! Acabei de enviar meu palpite no bolão (${nome} - Placar: ${golsBrasil}x${golsMarrocos}). Segue o comprovante de pagamento Pix de R$ 10,00.`);
                 linkWhats.href = `https://api.whatsapp.com/send?phone=${TELEFONE_WHATSAPP}&text=${mensagemWhats}`;
                 
